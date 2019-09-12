@@ -1,38 +1,27 @@
 package com.sbugert.rnadmob;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
-import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableNativeArray;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-public class RNAdManger extends ReactContextBaseJavaModule {
+public class RNAdManagerModule extends ReactContextBaseJavaModule {
 
     public static final String REACT_CLASS = "RNAdManger";
 
     public static final String EVENT_ADS_LOADED = "nativeAdsLoaded";
     public static final String EVENT_ADS_FAILED_TO_LOAD = "nativeAdsFailedToLoad";
 
-    UnifiedNativeAd nativeAd;
+    private UnifiedNativeAd nativeAd;
     String adUnitID;
     int adsToRequest;
     AdLoader adLoader;
@@ -43,21 +32,22 @@ public class RNAdManger extends ReactContextBaseJavaModule {
         return REACT_CLASS;
     }
 
-    public RNAdManagerAdModule(ReactApplicationContext reactContext) {
+    public RNAdManagerModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
     @ReactMethod
     public void init(String adUnitID, int adsToRequest){
+        final ReactApplicationContext reactContext = this.getReactApplicationContext();
         this.adUnitID = adUnitID;
         this.adsToRequest = adsToRequest;
 
-        this.adLoader = new AdLoader.Builder(context, adUnitID)
+        this.adLoader = new AdLoader.Builder(reactContext, adUnitID)
             .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                  @Override
                 public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
                     // Show the ad.
-                    this.nativeAd=unifiedNativeAd;
+                    nativeAd = unifiedNativeAd;
                 sendEvent(EVENT_ADS_LOADED,null);
                 }
             })
