@@ -12,4 +12,13 @@ module.exports = {
   get AdMobRewarded() {
     return require('./RNAdMobRewarded').default;
   },
+  get NativeAdView() {
+    return require('./RNNativeAdView').default;
+  },
+  get MediaView() {
+    return require('./RNMediaView').default;
+  },
+  get AdChoicesView() {
+    return require("./RNAdChoicesView").default;
+  }
 };

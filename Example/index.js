@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { name as appName } from './app.json';
 
-import { AdMobBanner, AdMobRewarded, AdMobInterstitial, PublisherBanner } from 'react-native-admob';
+import { AdMobBanner, AdMobRewarded, AdMobInterstitial, PublisherBanner, NativeAdView, MediaView, AdChoicesView } from 'react-native-admob';
 
 const BannerExample = ({ style, title, children, ...props }) => (
   <View {...props} style={[styles.example, style]}>
@@ -93,6 +93,12 @@ export default class Example extends Component {
     return (
       <View style={styles.container}>
         <ScrollView>
+          <BannerExample title="Native Ad">
+            <NativeAdView adUnitId="ca-app-pub-3940256099942544/2247696110" onAdLoaded={({nativeEvent}) => console.log(nativeEvent)} onAdFailedToLoad={() => console.log("Load failed")} style={{height: 50, width: 50, backgroundColor: "red"}}>
+              <MediaView style={{height: 50, width: 50, backgroundColor: "yellow"}} resizeMode="cover"></MediaView>
+              <AdChoicesView style={{height: 10, width: 10, position: "absolute", top: 0, left: 0}}/>
+            </NativeAdView>
+          </BannerExample>
           <BannerExample title="AdMob - Basic">
             <AdMobBanner
               adSize="banner"
