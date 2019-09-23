@@ -10,13 +10,12 @@ Pod::Spec.new do |s|
   s.license       = package['license']
   s.homepage      = package['homepage']
   s.source        = { :git => 'https://github.com/sbugert/react-native-admob.git', :tag => "v#{s.version}" }
-  s.platform      = :ios, '11.4'
+  s.platform      = :ios, '7.0'
   s.source_files = "ios/*.{h,m,swift}"
   s.requires_arc = true
   s.dependency      'React'
 
-  s.subspec 'Admob SDK' do |ss|
-    ss.dependency     'Google-Mobile-Ads-SDK'
-
+  s.subspec 'AdmobSDK' do |ss|
+    ss.dependency 'Google-Mobile-Ads-SDK'
   end
 end

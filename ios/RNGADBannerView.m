@@ -127,4 +127,31 @@ didFailToReceiveAdWithError:(GADRequestError *)error
                               @"height": @(adSize.height) });
 }
 
+
+
+- (void)nativeAdDidRecordImpression:(GADUnifiedNativeAd *)nativeAd {
+    // The native ad was shown.
+}
+
+- (void)nativeAdDidRecordClick:(GADUnifiedNativeAd *)nativeAd {
+    // The native ad was clicked on.
+}
+
+- (void)nativeAdWillPresentScreen:(GADUnifiedNativeAd *)nativeAd {
+    // The native ad will present a full screen view.
+}
+
+- (void)nativeAdWillDismissScreen:(GADUnifiedNativeAd *)nativeAd {
+    // The native ad will dismiss a full screen view.
+}
+
+- (void)nativeAdDidDismissScreen:(GADUnifiedNativeAd *)nativeAd {
+    // The native ad did dismiss a full screen view.
+}
+
+- (void)nativeAdWillLeaveApplication:(GADUnifiedNativeAd *)nativeAd {
+    // The native ad will cause the application to become inactive and
+    // open a new application.
+}
+
 @end

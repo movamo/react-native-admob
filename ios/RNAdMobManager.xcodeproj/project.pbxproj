@@ -15,6 +15,9 @@
 		A962C2531CB27DBD00E508A1 /* RNAdMobInterstitial.m in Sources */ = {isa = PBXBuildFile; fileRef = A962C2521CB27DBD00E508A1 /* RNAdMobInterstitial.m */; };
 		A96DA7841C146DA600FC639B /* RNGADBannerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A96DA7811C146DA600FC639B /* RNGADBannerView.m */; };
 		A96DA7851C146DA600FC639B /* RNGADBannerViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A96DA7831C146DA600FC639B /* RNGADBannerViewManager.m */; };
+		C3838E2023337B43003F6098 /* RNGADAdChoicesViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C3838E1F23337B43003F6098 /* RNGADAdChoicesViewManager.m */; };
+		C3838E2623339C14003F6098 /* RNGADUnifiedNativeAdView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3838E2523339C14003F6098 /* RNGADUnifiedNativeAdView.m */; };
+		C3838E292334D8B3003F6098 /* MediaViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C3838E282334D8B3003F6098 /* MediaViewManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -47,6 +50,12 @@
 		A96DA7811C146DA600FC639B /* RNGADBannerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNGADBannerView.m; sourceTree = SOURCE_ROOT; };
 		A96DA7821C146DA600FC639B /* RNGADBannerViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNGADBannerViewManager.h; sourceTree = SOURCE_ROOT; };
 		A96DA7831C146DA600FC639B /* RNGADBannerViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNGADBannerViewManager.m; sourceTree = SOURCE_ROOT; };
+		C3838E1E23337B21003F6098 /* RNGADAdChoicesViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNGADAdChoicesViewManager.h; sourceTree = SOURCE_ROOT; };
+		C3838E1F23337B43003F6098 /* RNGADAdChoicesViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNGADAdChoicesViewManager.m; sourceTree = SOURCE_ROOT; };
+		C3838E2423339BF2003F6098 /* RNGADUnifiedNativeAdView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNGADUnifiedNativeAdView.h; sourceTree = SOURCE_ROOT; };
+		C3838E2523339C14003F6098 /* RNGADUnifiedNativeAdView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNGADUnifiedNativeAdView.m; sourceTree = SOURCE_ROOT; };
+		C3838E272334D828003F6098 /* MediaViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaViewManager.h; sourceTree = SOURCE_ROOT; };
+		C3838E282334D8B3003F6098 /* MediaViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaViewManager.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +104,12 @@
 				A90F2F8B1D50AEF200F2A2E3 /* RNAdMobRewarded.m */,
 				5E86A6451F126FCE008013EB /* RCTConvert+GADAdSize.h */,
 				5E86A6461F126FCE008013EB /* RCTConvert+GADAdSize.m */,
+				C3838E1E23337B21003F6098 /* RNGADAdChoicesViewManager.h */,
+				C3838E1F23337B43003F6098 /* RNGADAdChoicesViewManager.m */,
+				C3838E282334D8B3003F6098 /* MediaViewManager.m */,
+				C3838E2423339BF2003F6098 /* RNGADUnifiedNativeAdView.h */,
+				C3838E2523339C14003F6098 /* RNGADUnifiedNativeAdView.m */,
+				C3838E272334D828003F6098 /* MediaViewManager.h */,
 			);
 			path = RNAdMobManager;
 			sourceTree = "<group>";
@@ -139,6 +154,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = A96DA76B1C146D7200FC639B;
@@ -156,14 +172,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3838E2623339C14003F6098 /* RNGADUnifiedNativeAdView.m in Sources */,
 				A962C2531CB27DBD00E508A1 /* RNAdMobInterstitial.m in Sources */,
 				0CB8C04B1D913E00002BC3EF /* RNDFPBannerView.m in Sources */,
 				A90F2F8C1D50AEF200F2A2E3 /* RNAdMobRewarded.m in Sources */,
+				C3838E292334D8B3003F6098 /* MediaViewManager.m in Sources */,
 				A96DA7841C146DA600FC639B /* RNGADBannerView.m in Sources */,
 				A96DA7851C146DA600FC639B /* RNGADBannerViewManager.m in Sources */,
 				5E2419841FE11E0F00C6B738 /* RNAdMobUtils.m in Sources */,
 				5E86A6471F126FCE008013EB /* RCTConvert+GADAdSize.m in Sources */,
 				0CB8C04E1D9143A6002BC3EF /* RNDFPBannerViewManager.m in Sources */,
+				C3838E2023337B43003F6098 /* RNGADAdChoicesViewManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
