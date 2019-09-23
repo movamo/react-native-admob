@@ -38,7 +38,7 @@ public class RNAdMobRewardedVideoAdModule extends ReactContextBaseJavaModule imp
     RewardedVideoAd mRewardedVideoAd;
     String adUnitID;
     String[] testDevices;
-
+    String userID;
     private Promise mRequestAdPromise;
 
     @Override
@@ -130,6 +130,11 @@ public class RNAdMobRewardedVideoAdModule extends ReactContextBaseJavaModule imp
     }
 
     @ReactMethod
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    @ReactMethod
     public void setTestDevices(ReadableArray testDevices) {
       ReadableNativeArray nativeArray = (ReadableNativeArray)testDevices;
       ArrayList<Object> list = nativeArray.toArrayList();
@@ -144,7 +149,8 @@ public class RNAdMobRewardedVideoAdModule extends ReactContextBaseJavaModule imp
                 RNAdMobRewardedVideoAdModule.this.mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getCurrentActivity());
 
                 RNAdMobRewardedVideoAdModule.this.mRewardedVideoAd.setRewardedVideoAdListener(RNAdMobRewardedVideoAdModule.this);
-
+                mRewardedVideoAd.setUserId(RNAdMobRewardedVideoAdModule.this.userID);
+                mRewardedVideoAd.setCustomData("video");
                 if (mRewardedVideoAd.isLoaded()) {
                     promise.reject("E_AD_ALREADY_LOADED", "Ad is already loaded.");
                 } else {
