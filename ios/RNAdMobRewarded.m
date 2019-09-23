@@ -18,6 +18,7 @@ static NSString *const kEventVideoCompleted = @"rewardedVideoAdVideoCompleted";
 
 @implementation RNAdMobRewarded
 {
+    NSString *_userID;
     NSString *_adUnitID;
     NSArray *_testDevices;
     RCTPromiseResolveBlock _requestAdResolve;
@@ -57,6 +58,11 @@ RCT_EXPORT_METHOD(setAdUnitID:(NSString *)adUnitID)
     _adUnitID = adUnitID;
 }
 
+RCT_EXPORT_METHOD(setUserID:(NSString *)userID)
+{
+    _userID = userID;
+}
+
 RCT_EXPORT_METHOD(setTestDevices:(NSArray *)testDevices)
 {
     _testDevices = RNAdMobProcessTestDevices(testDevices, kGADSimulatorID);
@@ -68,10 +74,13 @@ RCT_EXPORT_METHOD(requestAd:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromise
     _requestAdReject = reject;
 
     [GADRewardBasedVideoAd sharedInstance].delegate = self;
+    [GADRewardBasedVideoAd sharedInstance].userIdentifier = _userID;
+    [GADRewardBasedVideoAd sharedInstance].customRewardString = @"video";
     GADRequest *request = [GADRequest request];
     request.testDevices = _testDevices;
     [[GADRewardBasedVideoAd sharedInstance] loadRequest:request
                                            withAdUnitID:_adUnitID];
+
 }
 
 RCT_EXPORT_METHOD(showAd:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
