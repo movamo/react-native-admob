@@ -19,6 +19,9 @@ module.exports = {
     return require('./RNMediaView').default;
   },
   get AdChoicesView() {
-    return require("./RNAdChoicesView").default;
+    return require('./RNAdChoicesView').default;
+  },
+  get withNativeAd() {
+    return require('./withNativeAd').default;
   }
 };

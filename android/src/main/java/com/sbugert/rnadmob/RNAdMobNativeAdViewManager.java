@@ -36,6 +36,8 @@ public class RNAdMobNativeAdViewManager extends ViewGroupManager<UnifiedNativeAd
     public static final String EVENT_AD_LOADED = "onAdLoaded";
     public static final String EVENT_AD_LOAD_FAILED = "onAdFailedToLoad";
 
+    public static final int COMMAND_CLICK = 1;
+
     @Override
     public String getName() {
         return REACT_CLASS;
@@ -50,6 +52,20 @@ public class RNAdMobNativeAdViewManager extends ViewGroupManager<UnifiedNativeAd
     @Override
     public void onDropViewInstance(@Nonnull UnifiedNativeAdView view) {
         view.destroy();
+    }
+
+    @Override
+    public void receiveCommand(@Nonnull UnifiedNativeAdView root, int commandId, @javax.annotation.Nullable ReadableArray args) {
+        switch (commandId){
+            case COMMAND_CLICK:
+                root.performClick();
+        }
+    }
+
+    @javax.annotation.Nullable
+    @Override
+    public Map<String, Integer> getCommandsMap() {
+       return MapBuilder.of("onClick", COMMAND_CLICK);
     }
 
     @ReactProp(name = PROP_AD_ID)
@@ -90,13 +106,10 @@ public class RNAdMobNativeAdViewManager extends ViewGroupManager<UnifiedNativeAd
 
     private void onAdLoadEvent(UnifiedNativeAdView view, UnifiedNativeAd ad) {
         MediaView mediaView = getFirstChildOfType(view, MediaView.class);
-        if (mediaView != null){
+        if (mediaView != null) {
             view.setMediaView(mediaView);
         }
-        AdChoicesView adChoicesView = getFirstChildOfType(view, AdChoicesView.class);
-        if(adChoicesView != null){
-            view.setAdChoicesView(adChoicesView);
-        }
+
         WritableMap adInformation = Arguments.createMap();
         adInformation.putString("headline", ad.getHeadline());
         adInformation.putString("callToAction", ad.getCallToAction());
@@ -105,6 +118,17 @@ public class RNAdMobNativeAdViewManager extends ViewGroupManager<UnifiedNativeAd
         ReactContext context = (ReactContext) view.getContext();
         context.getJSModule(RCTEventEmitter.class).receiveEvent(view.getId(), EVENT_AD_LOADED, adInformation);
         view.setNativeAd(ad);
+        //AdChoicesView can only be set by attaching a native Ad
+        AdChoicesView adChoicesView = getFirstChildOfType(view, AdChoicesView.class);
+        if (adChoicesView != null) {
+            //Measure is hopefully the same everytime
+            int width = 39, height = 39;
+           adChoicesView.measure(width, height);
+           // Measure Parent for the upper right corner
+           ViewGroup parent = (ViewGroup) adChoicesView.getParent();
+           int right = parent.getRight(), top = parent.getTop();
+           adChoicesView.layout(right - width, top, right, top + height);
+        }
     }
 
 
@@ -124,4 +148,8 @@ public class RNAdMobNativeAdViewManager extends ViewGroupManager<UnifiedNativeAd
         return builder.build();
     }
 
+    @Override
+    public boolean needsCustomLayoutForChildren() {
+        return true;
+    }
 }

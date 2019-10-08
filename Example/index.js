@@ -10,12 +10,14 @@ import {
   View,
   Platform,
   TouchableHighlight,
+  TouchableOpacity,
   Button,
   ScrollView,
 } from 'react-native';
 import { name as appName } from './app.json';
 
-import { AdMobBanner, AdMobRewarded, AdMobInterstitial, PublisherBanner, NativeAdView, MediaView, AdChoicesView } from 'react-native-admob';
+import { AdMobBanner, AdMobRewarded, AdMobInterstitial, PublisherBanner, NativeAdView, MediaView} from 'react-native-admob';
+import withNativeAd from 'react-native-admob/withNativeAd';
 
 const BannerExample = ({ style, title, children, ...props }) => (
   <View {...props} style={[styles.example, style]}>
@@ -23,6 +25,18 @@ const BannerExample = ({ style, title, children, ...props }) => (
     <View>{children}</View>
   </View>
 );
+
+const NativeAd = withNativeAd("ca-app-pub-3940256099942544/2247696110")(({onClick, headline}) => {
+return (<View style={{height: 100, width: 100, backgroundColor: "red"}}>
+  <MediaView style={[StyleSheet.absoluteFill]} resizeMode="cover" />
+  <TouchableOpacity
+    nativeID="headline"    
+    style={{height: 50, width: 100, backgroundColor: "yellow"}}
+    collapsable={false}
+    onPress={() => console.log("Test")}>
+    <Text>{headline}</Text>
+  </TouchableOpacity>
+</View>)})
 
 const bannerWidths = [200, 250, 320];
 
@@ -94,10 +108,9 @@ export default class Example extends Component {
       <View style={styles.container}>
         <ScrollView>
           <BannerExample title="Native Ad">
-            <NativeAdView adUnitId="ca-app-pub-3940256099942544/2247696110" onAdLoaded={({nativeEvent}) => console.log(nativeEvent)} onAdFailedToLoad={() => console.log("Load failed")} style={{height: 50, width: 50, backgroundColor: "red"}}>
-              <MediaView style={{height: 50, width: 50, backgroundColor: "yellow"}} resizeMode="cover"></MediaView>
-              <AdChoicesView style={{height: 10, width: 10, position: "absolute", top: 0, left: 0}}/>
-            </NativeAdView>
+            <View style={{height: 100, width: 100}}>
+           <NativeAd/>
+           </View>
           </BannerExample>
           <BannerExample title="AdMob - Basic">
             <AdMobBanner
@@ -187,6 +200,7 @@ export default class Example extends Component {
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   container: {
