@@ -10,7 +10,7 @@
 
 @implementation RNGADAdChoicesViewManager
 
-RCT_EXPORT_MODULE(AdChoicesViewManager)
+RCT_EXPORT_MODULE()
 
 - (UIView *)view
 {

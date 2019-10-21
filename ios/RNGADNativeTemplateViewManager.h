@@ -4,5 +4,6 @@
 #import "RCTViewManager.h"
 #endif
 
-@interface RNAdMobNativeAdViewManager : RCTViewManager
+@interface RNGADNativeTemplateViewManager : RCTViewManager
+
 @end

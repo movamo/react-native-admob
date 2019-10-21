@@ -1,17 +1,36 @@
-import React from 'react';
-import { requireNativeComponent, ViewPropTypes, NativeModules } from 'react-native';
-import { string } from 'prop-types';
-console.log('admobnative', NativeModules);
+import React, { Component } from 'react';
+import { requireNativeComponent, ViewPropTypes } from 'react-native';
+import { string, func } from 'prop-types';
 
-RNAdMobNativeAdView = requireNativeComponent('RNAdMobNativeAdView', NativeAdView);
+class NativeAdView extends Component {
+  constructor() {
+    super();
+    this.state = {
+      style: {}
+    };
+  }
 
-NativeAdView = props => {
-  return <RNAdMobNativeAdView {...props} />;
-};
+  render() {
+    return (
+      <RNGADUnifiedNativeAdView {...this.props} style={[this.props.style, this.state.style]} />
+    );
+  }
+}
 
 NativeAdView.propTypes = {
   ...ViewPropTypes,
-  adUnitId: string.isRequired
+  /**
+   * AdMob ad unit ID
+   */
+  adUnitID: string,
+
+  onAdLoaded: func,
+  onAdFailedToLoad: func,
+  onAdOpened: func,
+  onAdClosed: func,
+  onAdLeftApplication: func
 };
+
+const RNGADUnifiedNativeAdView = requireNativeComponent('RNGADUnifiedNativeAdView', NativeAdView);
 
 export default NativeAdView;
