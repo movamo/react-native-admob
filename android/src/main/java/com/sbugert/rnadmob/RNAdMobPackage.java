@@ -33,7 +33,7 @@ public class RNAdMobPackage implements ReactPackage {
           new RNPublisherBannerViewManager(),
           new RNAdMobNativeAdViewManager(),
           new RNAdMobMediaViewManager(),
-          new RNAdMobAdChoicesViewManager(),
+          new RNAdMobAdChoicesViewManager()
       );
     }
 }
