@@ -23,5 +23,8 @@ module.exports = {
   },
   get withNativeAd() {
     return require('./withNativeAd').default;
-  }
+  },
+  get NativeAdLayout() {
+    return require('./NativeAdLayout').default;
+  },
 };

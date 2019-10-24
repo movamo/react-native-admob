@@ -6,7 +6,6 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +33,7 @@ public class RNAdMobPackage implements ReactPackage {
           new RNPublisherBannerViewManager(),
           new RNAdMobNativeAdViewManager(),
           new RNAdMobMediaViewManager(),
-          new RNAdMobAdChoicesViewManager()
+          new RNAdMobAdChoicesViewManager(),
       );
     }
 }

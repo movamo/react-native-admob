@@ -16,6 +16,7 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.facebook.react.uimanager.util.ReactFindViewUtil;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
@@ -24,6 +25,7 @@ import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 
+import java.util.EventListener;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -45,7 +47,7 @@ public class RNAdMobNativeAdViewManager extends ViewGroupManager<UnifiedNativeAd
 
     @Override
     public UnifiedNativeAdView createViewInstance(ThemedReactContext themedReactContext) {
-        UnifiedNativeAdView nativeAdView = new UnifiedNativeAdView(themedReactContext);
+        final UnifiedNativeAdView nativeAdView = new UnifiedNativeAdView(themedReactContext);
         return nativeAdView;
     }
 
@@ -56,7 +58,7 @@ public class RNAdMobNativeAdViewManager extends ViewGroupManager<UnifiedNativeAd
 
     @Override
     public void receiveCommand(@Nonnull UnifiedNativeAdView root, int commandId, @javax.annotation.Nullable ReadableArray args) {
-        switch (commandId){
+        switch (commandId) {
             case COMMAND_CLICK:
                 root.performClick();
         }
@@ -65,7 +67,7 @@ public class RNAdMobNativeAdViewManager extends ViewGroupManager<UnifiedNativeAd
     @javax.annotation.Nullable
     @Override
     public Map<String, Integer> getCommandsMap() {
-       return MapBuilder.of("onClick", COMMAND_CLICK);
+        return MapBuilder.of("onClick", COMMAND_CLICK);
     }
 
     @ReactProp(name = PROP_AD_ID)
@@ -118,16 +120,20 @@ public class RNAdMobNativeAdViewManager extends ViewGroupManager<UnifiedNativeAd
         ReactContext context = (ReactContext) view.getContext();
         context.getJSModule(RCTEventEmitter.class).receiveEvent(view.getId(), EVENT_AD_LOADED, adInformation);
         view.setNativeAd(ad);
+        //Set Ad First or the Click-Events are getting mismatched.
+        view.setHeadlineView(ReactFindViewUtil.findView(view, "Headline"));
+        view.setBodyView(ReactFindViewUtil.findView(view, "Body"));
+        view.setCallToActionView(ReactFindViewUtil.findView(view, "CallToAction"));
         //AdChoicesView can only be set by attaching a native Ad
         AdChoicesView adChoicesView = getFirstChildOfType(view, AdChoicesView.class);
         if (adChoicesView != null) {
             //Measure is hopefully the same everytime
-            int width = 39, height = 39;
-           adChoicesView.measure(width, height);
-           // Measure Parent for the upper right corner
-           ViewGroup parent = (ViewGroup) adChoicesView.getParent();
-           int right = parent.getRight(), top = parent.getTop();
-           adChoicesView.layout(right - width, top, right, top + height);
+            ViewGroup parent = (ViewGroup) adChoicesView.getParent();
+            adChoicesView.measure(View.MeasureSpec.makeMeasureSpec(parent.getMeasuredWidth(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(parent.getMeasuredHeight(), View.MeasureSpec.EXACTLY));
+            // Measure Parent for the upper right corner
+
+            adChoicesView.layout(0, 0, adChoicesView.getMeasuredWidth(), adChoicesView.getMeasuredHeight());
         }
     }
 
