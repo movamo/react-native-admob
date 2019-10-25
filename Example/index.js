@@ -2,7 +2,7 @@
  * @format
  */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   AppRegistry,
   StyleSheet,
@@ -10,18 +10,44 @@ import {
   View,
   Platform,
   TouchableHighlight,
+  TouchableOpacity,
   Button,
   ScrollView,
 } from 'react-native';
-import { name as appName } from './app.json';
+import {name as appName} from './app.json';
 
-import { AdMobBanner, AdMobRewarded, AdMobInterstitial, PublisherBanner, NativeAdView, MediaView, AdChoicesView } from 'react-native-admob';
+import {
+  AdMobBanner,
+  AdMobRewarded,
+  AdMobInterstitial,
+  PublisherBanner,
+  NativeAdView,
+  MediaView,
+  NativeAdLayout,
+} from 'react-native-admob';
+import withNativeAd from 'react-native-admob/withNativeAd';
 
-const BannerExample = ({ style, title, children, ...props }) => (
+const BannerExample = ({style, title, children, ...props}) => (
   <View {...props} style={[styles.example, style]}>
     <Text style={styles.title}>{title}</Text>
     <View>{children}</View>
   </View>
+);
+
+const NativeAd = withNativeAd('ca-app-pub-3940256099942544/2247696110')(
+  ({headline}) => {
+    return (
+      <View style={{height: 100, width: 100, backgroundColor: 'red'}}>
+        <MediaView style={[StyleSheet.absoluteFill]} resizeMode="cover" />
+        <View
+          style={{height: 50, width: 100, backgroundColor: 'yellow'}}
+          collapsable={false}
+          onPress={() => console.log('Test')}>
+          <Text nativeID="Headline">{headline}</Text>
+        </View>
+      </View>
+    );
+  },
 );
 
 const bannerWidths = [200, 250, 320];
@@ -30,7 +56,7 @@ export default class Example extends Component {
   constructor() {
     super();
     this.state = {
-      fluidSizeIndex: 0
+      fluidSizeIndex: 0,
     };
   }
 
@@ -39,20 +65,26 @@ export default class Example extends Component {
     AdMobRewarded.setAdUnitID('ca-app-pub-3940256099942544/5224354917');
 
     AdMobRewarded.addEventListener('rewarded', reward =>
-      console.log('AdMobRewarded => rewarded', reward)
+      console.log('AdMobRewarded => rewarded', reward),
     );
-    AdMobRewarded.addEventListener('adLoaded', () => console.log('AdMobRewarded => adLoaded'));
-    AdMobRewarded.addEventListener('adFailedToLoad', error => console.warn(error));
-    AdMobRewarded.addEventListener('adOpened', () => console.log('AdMobRewarded => adOpened'));
+    AdMobRewarded.addEventListener('adLoaded', () =>
+      console.log('AdMobRewarded => adLoaded'),
+    );
+    AdMobRewarded.addEventListener('adFailedToLoad', error =>
+      console.warn(error),
+    );
+    AdMobRewarded.addEventListener('adOpened', () =>
+      console.log('AdMobRewarded => adOpened'),
+    );
     AdMobRewarded.addEventListener('videoStarted', () =>
-      console.log('AdMobRewarded => videoStarted')
+      console.log('AdMobRewarded => videoStarted'),
     );
     AdMobRewarded.addEventListener('adClosed', () => {
       console.log('AdMobRewarded => adClosed');
       AdMobRewarded.requestAd().catch(error => console.warn(error));
     });
     AdMobRewarded.addEventListener('adLeftApplication', () =>
-      console.log('AdMobRewarded => adLeftApplication')
+      console.log('AdMobRewarded => adLeftApplication'),
     );
 
     AdMobRewarded.requestAd().catch(error => console.warn(error));
@@ -60,17 +92,21 @@ export default class Example extends Component {
     AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
     AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712');
 
-    AdMobInterstitial.addEventListener('adLoaded', () => console.log('AdMobInterstitial adLoaded'));
-    AdMobInterstitial.addEventListener('adFailedToLoad', error => console.warn(error));
+    AdMobInterstitial.addEventListener('adLoaded', () =>
+      console.log('AdMobInterstitial adLoaded'),
+    );
+    AdMobInterstitial.addEventListener('adFailedToLoad', error =>
+      console.warn(error),
+    );
     AdMobInterstitial.addEventListener('adOpened', () =>
-      console.log('AdMobInterstitial => adOpened')
+      console.log('AdMobInterstitial => adOpened'),
     );
     AdMobInterstitial.addEventListener('adClosed', () => {
       console.log('AdMobInterstitial => adClosed');
       AdMobInterstitial.requestAd().catch(error => console.warn(error));
     });
     AdMobInterstitial.addEventListener('adLeftApplication', () =>
-      console.log('AdMobInterstitial => adLeftApplication')
+      console.log('AdMobInterstitial => adLeftApplication'),
     );
 
     AdMobInterstitial.requestAd().catch(error => console.warn(error));
@@ -94,10 +130,14 @@ export default class Example extends Component {
       <View style={styles.container}>
         <ScrollView>
           <BannerExample title="Native Ad">
-            <NativeAdView adUnitId="ca-app-pub-3940256099942544/2247696110" onAdLoaded={({nativeEvent}) => console.log(nativeEvent)} onAdFailedToLoad={() => console.log("Load failed")} style={{height: 50, width: 50, backgroundColor: "red"}}>
-              <MediaView style={{height: 50, width: 50, backgroundColor: "yellow"}} resizeMode="cover"></MediaView>
-              <AdChoicesView style={{height: 10, width: 10, position: "absolute", top: 0, left: 0}}/>
-            </NativeAdView>
+            <View style={{height: 100, width: 100}}>
+              <NativeAd />
+              {/* <NativeAdLayout
+                style={{height: 100, width: 100}}
+                adUnitId="ca-app-pub-3940256099942544/2247696110"
+                layout="ad_unified"
+              /> */}
+            </View>
           </BannerExample>
           <BannerExample title="AdMob - Basic">
             <AdMobBanner
@@ -105,7 +145,10 @@ export default class Example extends Component {
               adUnitID="ca-app-pub-3940256099942544/6300978111"
               ref={el => (this._basicExample = el)}
             />
-            <Button title="Reload" onPress={() => this._basicExample.loadBanner()} />
+            <Button
+              title="Reload"
+              onPress={() => this._basicExample.loadBanner()}
+            />
           </BannerExample>
           <BannerExample title="Smart Banner">
             <AdMobBanner
@@ -113,13 +156,22 @@ export default class Example extends Component {
               adUnitID="ca-app-pub-3940256099942544/6300978111"
               ref={el => (this._smartBannerExample = el)}
             />
-            <Button title="Reload" onPress={() => this._smartBannerExample.loadBanner()} />
+            <Button
+              title="Reload"
+              onPress={() => this._smartBannerExample.loadBanner()}
+            />
           </BannerExample>
           <BannerExample title="Rewarded">
-            <Button title="Show Rewarded Video and preload next" onPress={this.showRewarded} />
+            <Button
+              title="Show Rewarded Video and preload next"
+              onPress={this.showRewarded}
+            />
           </BannerExample>
           <BannerExample title="Interstitial">
-            <Button title="Show Interstitial and preload next" onPress={this.showInterstitial} />
+            <Button
+              title="Show Interstitial and preload next"
+              onPress={this.showInterstitial}
+            />
           </BannerExample>
           <BannerExample title="DFP - Multiple Ad Sizes">
             <PublisherBanner
@@ -128,17 +180,22 @@ export default class Example extends Component {
               adUnitID="/6499/example/APIDemo/AdSizes"
               ref={el => (this._adSizesExample = el)}
             />
-            <Button title="Reload" onPress={() => this._adSizesExample.loadBanner()} />
+            <Button
+              title="Reload"
+              onPress={() => this._adSizesExample.loadBanner()}
+            />
           </BannerExample>
-          <BannerExample title="DFP - App Events" style={this.state.appEventsExampleStyle}>
+          <BannerExample
+            title="DFP - App Events"
+            style={this.state.appEventsExampleStyle}>
             <PublisherBanner
-              style={{ height: 50 }}
+              style={{height: 50}}
               adUnitID="/6499/example/APIDemo/AppEvents"
               onAdFailedToLoad={error => console.warn(error)}
               onAppEvent={event => {
                 if (event.name === 'color') {
                   this.setState({
-                    appEventsExampleStyle: { backgroundColor: event.info }
+                    appEventsExampleStyle: {backgroundColor: event.info},
                   });
                 }
               }}
@@ -153,15 +210,14 @@ export default class Example extends Component {
           <BannerExample title="DFP - Fluid Ad Size">
             <View
               style={[
-                { backgroundColor: '#f3f', paddingVertical: 10 },
-                this.state.fluidAdSizeExampleStyle
-              ]}
-            >
+                {backgroundColor: '#f3f', paddingVertical: 10},
+                this.state.fluidAdSizeExampleStyle,
+              ]}>
               <PublisherBanner
                 adSize="fluid"
                 adUnitID="/6499/example/APIDemo/Fluid"
                 ref={el => (this._appFluidAdSizeExample = el)}
-                style={{ flex: 1 }}
+                style={{flex: 1}}
               />
             </View>
             <Button
@@ -170,8 +226,11 @@ export default class Example extends Component {
                 this.setState(prevState => ({
                   fluidSizeIndex: prevState.fluidSizeIndex + 1,
                   fluidAdSizeExampleStyle: {
-                    width: bannerWidths[prevState.fluidSizeIndex % bannerWidths.length]
-                  }
+                    width:
+                      bannerWidths[
+                        prevState.fluidSizeIndex % bannerWidths.length
+                      ],
+                  },
                 }))
               }
               style={styles.button}
@@ -190,15 +249,15 @@ export default class Example extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: Platform.OS === 'ios' ? 30 : 10
+    marginTop: Platform.OS === 'ios' ? 30 : 10,
   },
   example: {
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   title: {
     margin: 10,
-    fontSize: 20
-  }
+    fontSize: 20,
+  },
 });
 
 AppRegistry.registerComponent(appName, () => Example);

@@ -1,36 +1,18 @@
-import React, { Component } from 'react';
+import React, { forwardRef } from 'react';
 import { requireNativeComponent, ViewPropTypes } from 'react-native';
 import { string, func } from 'prop-types';
 
-class NativeAdView extends Component {
-  constructor() {
-    super();
-    this.state = {
-      style: {}
-    };
-  }
-
-  render() {
-    return (
-      <RNGADUnifiedNativeAdView {...this.props} style={[this.props.style, this.state.style]} />
-    );
-  }
-}
+NativeAdView = ({ forwardedRef, ...props }) => {
+  return <RNAdMobNativeAdView {...props} ref={forwardedRef} />;
+};
 
 NativeAdView.propTypes = {
   ...ViewPropTypes,
-  /**
-   * AdMob ad unit ID
-   */
-  adUnitID: string,
-
+  adUnitId: string.isRequired,
   onAdLoaded: func,
-  onAdFailedToLoad: func,
-  onAdOpened: func,
-  onAdClosed: func,
-  onAdLeftApplication: func
+  onAdFailedToLoad: func
 };
 
 const RNGADUnifiedNativeAdView = requireNativeComponent('RNGADUnifiedNativeAdView', NativeAdView);
 
-export default NativeAdView;
+export default forwardRef((props, ref) => <NativeAdView forwardedRef={ref} {...props} />);

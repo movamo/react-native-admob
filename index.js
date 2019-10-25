@@ -23,5 +23,8 @@ module.exports = {
   },
   get NativeTemplateView() {
     return require('./RNNativeTemplateView').default;
+  },
+  get withNativeAd() {
+    return require('./withNativeAd').default;
   }
 };
