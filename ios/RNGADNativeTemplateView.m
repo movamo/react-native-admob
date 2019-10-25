@@ -41,8 +41,7 @@
         UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
         UIViewController *rootViewController = [keyWindow rootViewController];
 
-        _nativeAdView = [[GADUnifiedNativeAdView alloc] init];
-        
+        _nativeAdView = [[GADUnifiedNativeAdView alloc] init];    
 
         [self addSubview:_nativeAdView];
         self.userInteractionEnabled=YES;
