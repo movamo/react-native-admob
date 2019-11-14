@@ -1,45 +1,38 @@
-import React, { Component } from 'react';
-import { requireNativeComponent, ViewPropTypes } from 'react-native';
-import { string, func } from 'prop-types';
+import React, { useRef, useEffect } from "react";
+import {
+  requireNativeComponent,
+  ViewPropTypes,
+  findNodeHandle
+} from "react-native";
+import { func } from "prop-types";
 
-class NativeTemplateView extends Component {
-  constructor() {
-    super();
-    this.handleAdFailedToLoad = this.handleAdFailedToLoad.bind(this);
-    this.state = {
-      style: {}
-    };
-  }
+NativeTemplateView = ({ adManager, ...props }) => {
+  const adViewRef = useRef(null);
+  console.log("NativeTemplateView", findNodeHandle(adViewRef.current));
+  useEffect(() => {
+    if (adManager && adViewRef && adViewRef.current) {
+      console.log("NativeTemplateView.useEffect", adViewRef.current);
 
-  handleAdFailedToLoad(event) {
-    if (this.props.onAdFailedToLoad) {
-      this.props.onAdFailedToLoad(createErrorFromErrorData(event.nativeEvent.error));
+      adManager.registerAdView(findNodeHandle(adViewRef.current)).then(resp => {
+        console.log("NativeTemplateView.response");
+        console.log("AdManager.requestAd");
+        adManager.requestAd();
+      });
     }
-  }
+  }, [adManager, adViewRef]);
 
-  render() {
-    return (
-      <RNGADNativeTemplateView
-        {...this.props}
-        style={[this.props.style, this.state.style]}
-        onAdFailedToLoad={this.handleAdFailedToLoad}
-        onSizeChange={this.handleSizeChange}
-      />
-    );
-  }
-}
+  return <RNGADNativeTemplateView {...props} ref={adViewRef} />;
+};
 
 NativeTemplateView.propTypes = {
   ...ViewPropTypes,
-  onAdLoaded: func,
-  onAdFailedToLoad: func,
   onAdOpened: func,
   onAdClosed: func,
   onAdLeftApplication: func
 };
 
 const RNGADNativeTemplateView = requireNativeComponent(
-  'RNGADNativeTemplateView',
+  "RNGADNativeTemplateView",
   NativeTemplateView
 );
 

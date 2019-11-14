@@ -29,12 +29,11 @@
 
 {
     GADUnifiedNativeAdView * _nativeAdView;
-    GADAdLoader * _adLoader;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-    NSLog(@"initWithFrame");
+    NSLog(@"RNGADNativeTemplateView.initWithFrame");
 
     if ((self = [super initWithFrame:frame])) {
         super.backgroundColor = [UIColor clearColor];
@@ -49,23 +48,9 @@
     return self;
 }
 
+-(void) setNativeAd:(GADUnifiedNativeAd *)nativeAd{
 
-- (void)adLoader:(GADAdLoader *)adLoader didFailToReceiveAdWithError:(GADRequestError *)error 
-{
-    NSLog(@"%@ failed with error: %@", adLoader, error);
-    if (self.onAdFailedToLoad) {
-        self.onAdFailedToLoad(@{ @"error": @{ @"message": [error localizedDescription] } });
-    }
-}
-    
-- (void)adLoader:(GADAdLoader *)adLoader didReceiveUnifiedNativeAd:(GADUnifiedNativeAd *)nativeAd 
-{
-    NSLog(@"didReceiveUnifiedNativeAd");
-
-   if (self.onAdLoaded) {
-       self.onAdLoaded(@{});
-   }
-
+    NSLog(@"RNGADNativeTemplateView.setNativeAd");
     GADTTemplateView *templateView = [self getSome:self.adType];
     
     _nativeAdView = templateView;
@@ -80,6 +65,7 @@
 
 - (GADTTemplateView*)getSome:(NSString *)adType
 {
+    NSLog(@"RNGADNativeTemplateView.getSome");
     NSArray * items = @[@"voting", @"visitors", @"matches", @"chats", @"search"];
     int adTypeAsInt = [items indexOfObject:adType];
     switch(adTypeAsInt)
@@ -105,23 +91,9 @@
     }
 }
 
-- (void)setAdId:(NSString *)adId
-{
-    NSLog(@"setAdUnitId: %@", adId);
-    _adId = adId;
-    _adLoader = [[GADAdLoader alloc]
-                     initWithAdUnitID:_adId
-                     rootViewController:self
-                     adTypes:@[ kGADAdLoaderAdTypeUnifiedNative ]
-                     options:nil];
-    
-    _adLoader.delegate = self;
-    [_adLoader loadRequest:[GADRequest request]];
-}
-
 - (void)setAdType:(NSString *)adType
 {
-    NSLog(@"setAdType: %@", adType);
+    NSLog(@"RNGADNativeTemplateView.setAdType: %@", adType);
     _adType = adType;
 }
 
@@ -131,6 +103,7 @@
 /// to the user clicking on an ad.
 - (void)nativeAdWillPresentScreen:(GADUnifiedNativeAd *)nativeAd
 {
+    NSLog(@"RNGADNativeTemplateView.nativeAdWillPresentScreen");
     if (self.onAdOpened) {
         self.onAdOpened(@{});
     }
@@ -139,6 +112,7 @@
 /// Tells the delegate that the full screen view will be dismissed.
 - (void)nativeAdWillDismissScreen:(GADUnifiedNativeAd *)nativeAd
 {
+    NSLog(@"RNGADNativeTemplateView.nativeAdWillDismissScreen");
     if (self.onAdClosed) {
         self.onAdClosed(@{});
     }
@@ -148,6 +122,7 @@
 /// the App Store), backgrounding the current app.
 - (void)nativeAdWillLeaveApplication:(GADUnifiedNativeAd *)nativeAd
 {
+    NSLog(@"RNGADNativeTemplateView.nativeAdWillLeaveApplication");
     if (self.onAdLeftApplication) {
         self.onAdLeftApplication(@{});
     }

@@ -1,30 +1,39 @@
 /* eslint-disable global-require */
 module.exports = {
   get AdMobBanner() {
-    return require('./RNAdMobBanner').default;
+    return require("./RNAdMobBanner").default;
   },
   get AdMobInterstitial() {
-    return require('./RNAdMobInterstitial').default;
+    return require("./RNAdMobInterstitial").default;
   },
   get PublisherBanner() {
-    return require('./RNPublisherBanner').default;
+    return require("./RNPublisherBanner").default;
   },
   get AdMobRewarded() {
-    return require('./RNAdMobRewarded').default;
+    return require("./RNAdMobRewarded").default;
   },
   get NativeAdView() {
-    return require('./RNNativeAdView').default;
+    return require("./RNNativeAdView").default;
   },
   get MediaView() {
-    return require('./RNMediaView').default;
+    return require("./RNMediaView").default;
   },
   get AdChoicesView() {
-    return require('./RNAdChoicesView').default;
+    return require("./RNAdChoicesView").default;
   },
   get NativeTemplateView() {
-    return require('./RNNativeTemplateView').default;
+    return require("./RNNativeTemplateView").default;
   },
   get withNativeAd() {
-    return require('./withNativeAd').default;
+    return require("./withNativeAd").default;
+  },
+  get AdManager() {
+    return require("./RNAdManager").default;
+  },
+  get withAdManager() {
+    return require("./withAdManager").default;
+  },
+  get useAdManager() {
+    return require("./useAdManager").default;
   }
 };

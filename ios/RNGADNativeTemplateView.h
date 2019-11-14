@@ -16,14 +16,13 @@
 
 @class RCTEventDispatcher;
 
-@interface RNGADNativeTemplateView: RCTView <GADUnifiedNativeAdLoaderDelegate, GADUnifiedNativeAdDelegate>
+@interface RNGADNativeTemplateView: RCTView <GADUnifiedNativeAdDelegate>
 
-@property (nonatomic, copy) NSString* adId;
 @property (nonatomic, copy) NSString* adType;
-@property (nonatomic, copy) RCTBubblingEventBlock onAdLoaded;
-@property (nonatomic, copy) RCTBubblingEventBlock onAdFailedToLoad;
 @property (nonatomic, copy) RCTBubblingEventBlock onAdOpened;
 @property (nonatomic, copy) RCTBubblingEventBlock onAdClosed;
 @property (nonatomic, copy) RCTBubblingEventBlock onAdLeftApplication;
+
+-(void) setNativeAd:(GADUnifiedNativeAd *)nativeAd;
 
 @end

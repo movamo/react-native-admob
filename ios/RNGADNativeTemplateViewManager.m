@@ -22,12 +22,8 @@ RCT_EXPORT_MODULE();
     return [RNGADNativeTemplateView new];
 }
 
-RCT_EXPORT_VIEW_PROPERTY(adId, NSString)
 RCT_EXPORT_VIEW_PROPERTY(adType, NSString)
 
-RCT_EXPORT_VIEW_PROPERTY(onSizeChange, RCTBubblingEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onAdLoaded, RCTBubblingEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onAdFailedToLoad, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onAdOpened, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onAdClosed, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onAdLeftApplication, RCTBubblingEventBlock)
