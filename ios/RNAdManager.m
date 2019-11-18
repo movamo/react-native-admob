@@ -7,29 +7,25 @@
 #import "RCTUtils.h"
 #endif
 #import <React/RCTUIManager.h>
+
 #import "RNGADNativeTemplateView.h"
+#import "AdLoader.h"
 
 static NSString *const kEventAdLoaded = @"nativeAdLoaded";
 static NSString *const kEventAdFailedToLoad = @"nativeAdFailedToLoad";
 
 @implementation RNAdManager
 {
-    GADAdLoader  *_adLoader;
-    NSString *_adUnitID;
-    RCTPromiseResolveBlock _requestAdResolve;
-    RCTPromiseRejectBlock _requestAdReject;
+    NSMutableDictionary<NSString*,AdLoader*>*_adLoaders;
     BOOL hasListeners;
-    NSMutableArray<RNGADNativeTemplateView*> *templateViews;
-    NSMutableArray<GADUnifiedNativeAd*> *nativeAds;
 }
 
-- (instancetype)init 
+- (instancetype)init
 {
         NSLog(@"RNAdManager.init");
     self = [super init];
     if(self) {
-        templateViews = [NSMutableArray new];
-        nativeAds = [NSMutableArray new];
+        _adLoaders = [NSMutableDictionary new];
     }
     return self;
 }
@@ -55,13 +51,7 @@ RCT_EXPORT_MODULE();
 
 #pragma mark exported methods
 
-RCT_EXPORT_METHOD(setAdUnitID:(NSString *)adUnitID)
-{
-    NSLog(@"RNAdManager.setAdUnitID");
-    _adUnitID = adUnitID;
-}
-
-RCT_EXPORT_METHOD(registerAdView:(nonnull NSNumber *) nativeAdViewTag resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(registerAdView:(nonnull NSString*)adUnitID nativeAdViewTag:(nonnull NSNumber *) nativeAdViewTag resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 {
     NSLog(@"RNAdManager.registerAdView %@", nativeAdViewTag);
 
@@ -75,14 +65,9 @@ RCT_EXPORT_METHOD(registerAdView:(nonnull NSNumber *) nativeAdViewTag resolve:(R
 
         if ([[viewRegistry objectForKey:nativeAdViewTag] isKindOfClass:[RNGADNativeTemplateView class]]) {
              templateView = (RNGADNativeTemplateView *)[viewRegistry objectForKey:nativeAdViewTag];
-            [templateViews addObject:templateView];
-            GADUnifiedNativeAd* ad = [nativeAds objectAtIndex:([nativeAds count]-1)];
-            [templateView setNativeAd: ad];
-            
-            //GADRequest *request = [GADRequest request];
-            //[_adLoader loadRequest:request];
-            
-            resolve(@[]);
+
+            [_adLoaders[adUnitID] registerAdView:templateView resolve:resolve];
+
         } else {
             reject(@"E_INVALID_VIEW_CLASS", @"View returned for passed native ad view tag is not an instance of RNGADNativeTemplateView", nil);
             return;
@@ -91,32 +76,23 @@ RCT_EXPORT_METHOD(registerAdView:(nonnull NSNumber *) nativeAdViewTag resolve:(R
     }];
 }
 
-RCT_EXPORT_METHOD(initLoader:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(initLoader:(NSString*)adUnitID resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-        NSLog(@"RNAdManager.initLoader");
+           NSLog(@"RNAdManager.initLoader");
+        AdLoader* loader =[[AdLoader alloc]
+                           init:self adUnitID:adUnitID ref:self];  
+    [_adLoaders setValue:loader forKey:adUnitID];
+             
+          resolve(nil);
 
-        _adLoader = [[GADAdLoader alloc]
-                         initWithAdUnitID:_adUnitID
-                         rootViewController:self
-                         adTypes:@[ kGADAdLoaderAdTypeUnifiedNative ]
-                         options:nil];        
-                         
-        _adLoader.delegate = self;
-            resolve(@[]);
-
-  
 }
 
-RCT_EXPORT_METHOD(requestAd:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(requestAd:(NSString*)adUnitID resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
         NSLog(@"RNAdManager.requestAd");
 
-
-        _requestAdResolve = resolve;
-        _requestAdReject = reject;
-
-        GADRequest *request = [GADRequest request];
-        [_adLoader loadRequest:request];
+        [_adLoaders[adUnitID] requestAd];
+        resolve(nil);
   
 }
 
@@ -131,27 +107,8 @@ RCT_EXPORT_METHOD(requestAd:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromise
     hasListeners = NO;
 }
 
-#pragma mark GADUnifiedNativeAdLoaderDelegate
-
-- (void)adLoader:(GADAdLoader *)adLoader didFailToReceiveAdWithError:(GADRequestError *)error 
+- (void)sendEvent:(NSString*)eventName body:(NSString*)body
 {
-    if (hasListeners) {
-        NSDictionary *jsError = RCTJSErrorFromCodeMessageAndNSError(@"E_AD_REQUEST_FAILED", error.localizedDescription, error);
-        [self sendEventWithName:kEventAdFailedToLoad body:jsError];
-    }
-    _requestAdReject(nil);
+    [self sendEventWithName:eventName body:body];
 }
-    
-- (void)adLoader:(GADAdLoader *)adLoader didReceiveUnifiedNativeAd:(GADUnifiedNativeAd *)nativeAd 
-{
-    if (hasListeners) {
- NSUInteger* adCount = [nativeAds count];
-        NSString *text = [NSString stringWithFormat:@"%li",adCount];
-        [self sendEventWithName:kEventAdLoaded body:@{@"adCount":text}];
-    }
-    [nativeAds addObject: nativeAd];
-
-    _requestAdResolve(nil);
-}
-
 @end

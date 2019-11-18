@@ -5,8 +5,7 @@
 #import "RCTBridgeModule.h"
 #import "RCTEventEmitter.h"
 #endif
-#import "RNGADNativeTemplateView.h"
-@import GoogleMobileAds;
 
-@interface RNAdManager : RCTEventEmitter <RCTBridgeModule, GADUnifiedNativeAdLoaderDelegate>
+@interface RNAdManager : RCTEventEmitter <RCTBridgeModule>
+- (void)sendEvent:(NSString*)eventName body:(NSString*)body;
 @end

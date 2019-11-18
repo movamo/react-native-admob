@@ -1,22 +1,18 @@
-import React, { useRef, useEffect } from "react";
-import {
-  requireNativeComponent,
-  ViewPropTypes,
-  findNodeHandle
-} from "react-native";
-import { func } from "prop-types";
+import React, { useRef, useEffect } from 'react';
+import { requireNativeComponent, ViewPropTypes, findNodeHandle } from 'react-native';
+import { func } from 'prop-types';
 
-NativeTemplateView = ({ adManager, ...props }) => {
+NativeTemplateView = ({ adUnitID, adManager, ...props }) => {
   const adViewRef = useRef(null);
-  console.log("NativeTemplateView", findNodeHandle(adViewRef.current));
+  //console.log("NativeTemplateView", findNodeHandle(adViewRef.current));
   useEffect(() => {
     if (adManager && adViewRef && adViewRef.current) {
-      console.log("NativeTemplateView.useEffect", adViewRef.current);
+      // console.log("NativeTemplateView.useEffect", adViewRef.current);
 
-      adManager.registerAdView(findNodeHandle(adViewRef.current)).then(resp => {
-        console.log("NativeTemplateView.response");
-        console.log("AdManager.requestAd");
-        adManager.requestAd();
+      adManager.registerAdView(adUnitID, findNodeHandle(adViewRef.current)).then(resp => {
+        //console.log("NativeTemplateView.response");
+        // console.log("AdManager.requestAd");
+        adManager.requestAd(adUnitID);
       });
     }
   }, [adManager, adViewRef]);
@@ -32,7 +28,7 @@ NativeTemplateView.propTypes = {
 };
 
 const RNGADNativeTemplateView = requireNativeComponent(
-  "RNGADNativeTemplateView",
+  'RNGADNativeTemplateView',
   NativeTemplateView
 );
 
