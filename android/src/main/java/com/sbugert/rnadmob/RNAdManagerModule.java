@@ -64,7 +64,7 @@ public class RNAdManagerModule extends ReactContextBaseJavaModule {
                 addLoadedAd(unifiedNativeAd, adUnitId);
                 ArrayList<UnifiedNativeAd> ads = loadedAds.get(adUnitId);
                 WritableMap result = Arguments.createMap();
-                result.putInt("numAds", ads.size());
+                result.putInt("adCount", ads.size());
                 result.putString("adUnitId", adUnitId);
                 sendEvent(EVENT_ADS_LOADED, result);
             }
