@@ -36,10 +36,10 @@ import java.util.WeakHashMap;
 
 public class RNAdManagerModule extends ReactContextBaseJavaModule {
 
-    public static final String REACT_CLASS = "RNAdManger";
+    public static final String REACT_CLASS = "RNAdManager";
 
-    public static final String EVENT_ADS_LOADED = "nativeAdsLoaded";
-    public static final String EVENT_ADS_FAILED_TO_LOAD = "nativeAdsFailedToLoad";
+    public static final String EVENT_ADS_LOADED = "nativeAdLoaded";
+    public static final String EVENT_ADS_FAILED_TO_LOAD = "nativeAdFailedToLoad";
 
     private HashMap<String, ArrayList<UnifiedNativeAd>> loadedAds = new HashMap<>();
 
