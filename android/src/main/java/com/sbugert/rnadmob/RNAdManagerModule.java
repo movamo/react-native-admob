@@ -57,7 +57,7 @@ public class RNAdManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void requestAd(final String adUnitId, final Promise promise) {
+    public void requestAd(final String adUnitId) {
         AdLoader adLoader = new AdLoader.Builder(this.getReactApplicationContext(), adUnitId).forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
             @Override
             public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
@@ -66,7 +66,6 @@ public class RNAdManagerModule extends ReactContextBaseJavaModule {
                 WritableMap result = Arguments.createMap();
                 result.putInt("numAds", ads.size());
                 result.putString("adUnitId", adUnitId);
-                promise.resolve(result);
                 sendEvent(EVENT_ADS_LOADED, result);
             }
         }).withAdListener(new AdListener() {
@@ -86,7 +85,6 @@ public class RNAdManagerModule extends ReactContextBaseJavaModule {
                     case AdRequest.ERROR_CODE_NETWORK_ERROR:
                         message = "Server could not be reached";
                 }
-                promise.reject(Integer.toString(i), message);
                 WritableMap map = Arguments.createMap();
                 map.putString("message", message);
                 map.putString("adUnitId", adUnitId);
