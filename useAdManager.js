@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import { NativeModules, NativeEventEmitter } from 'react-native';
+import { NativeModules, NativeEventEmitter, Platform } from "react-native";
 
-import { createErrorFromErrorData } from './utils';
+import { createErrorFromErrorData } from "./utils";
 
 const RNAdManager = NativeModules.RNAdManager;
 const eventEmitter = new NativeEventEmitter(RNAdManager);
@@ -13,10 +13,15 @@ const useAdManager = adUnitId => {
 
   useEffect(() => {
     // console.log('AdManager.init', adUnitId);
-    RNAdManager.initLoader(adUnitId).then(resp => {
-      // console.log('AdManager.response', adUnitId);
+    if (Platform.OS === "ios") {
+      RNAdManager.initLoader(adUnitId).then(resp => {
+        // console.log('AdManager.response', adUnitId);
+        RNAdManager.requestAd(adUnitId);
+      });
+    }
+    if (Platform.OS === "android") {
       RNAdManager.requestAd(adUnitId);
-    });
+    }
   }, []);
 
   useEffect(() => {
@@ -29,7 +34,7 @@ const useAdManager = adUnitId => {
         setHasAds(true);
       }
     }
-    const listener = eventEmitter.addListener('nativeAdLoaded', onAdLoaded);
+    const listener = eventEmitter.addListener("nativeAdLoaded", onAdLoaded);
 
     return () => listener.remove();
   }, [eventEmitter]);
@@ -37,7 +42,7 @@ const useAdManager = adUnitId => {
   useEffect(() => {
     // console.log('AdManager.initAdfaillistener', adUnitId);
 
-    const listener = eventEmitter.addListener('nativeAdFailedToLoad', error => {
+    const listener = eventEmitter.addListener("nativeAdFailedToLoad", error => {
       //  console.log('AdManager.nativeAdFailedToLoad', error);
     });
 

@@ -26,6 +26,7 @@ import {
   NativeAdLayout,
 } from 'react-native-admob';
 import withNativeAd from 'react-native-admob/withNativeAd';
+import useAdManager from 'react-native-admob/useAdManager';
 
 const BannerExample = ({style, title, children, ...props}) => (
   <View {...props} style={[styles.example, style]}>
@@ -34,21 +35,33 @@ const BannerExample = ({style, title, children, ...props}) => (
   </View>
 );
 
-const NativeAd = withNativeAd('ca-app-pub-3940256099942544/2247696110')(
-  ({headline}) => {
-    return (
-      <View style={{height: 100, width: 100, backgroundColor: 'red'}}>
-        <MediaView style={[StyleSheet.absoluteFill]} resizeMode="cover" />
-        <View
-          style={{height: 50, width: 100, backgroundColor: 'yellow'}}
-          collapsable={false}
-          onPress={() => console.log('Test')}>
-          <Text nativeID="Headline">{headline}</Text>
-        </View>
+const NativeAd = withNativeAd(({headline}) => {
+  return (
+    <View style={{height: 100, width: 100, backgroundColor: 'red'}}>
+      <MediaView style={[StyleSheet.absoluteFill]} resizeMode="cover" />
+      <View
+        style={{height: 50, width: 100, backgroundColor: 'yellow'}}
+        collapsable={false}
+        onPress={() => console.log('Test')}>
+        <Text nativeID="Headline">{headline}</Text>
       </View>
-    );
-  },
-);
+    </View>
+  );
+});
+
+const AdRequester = ({adUnitId}) => {
+  const {numAds, adManager} = useAdManager(
+    'ca-app-pub-3940256099942544/2247696110',
+  );
+  if (numAds === 0) {
+    return null;
+  }
+  return (
+    <NativeAd
+      adManager={adManager}
+      adUnitId="ca-app-pub-3940256099942544/2247696110"></NativeAd>
+  );
+};
 
 const bannerWidths = [200, 250, 320];
 
@@ -131,7 +144,7 @@ export default class Example extends Component {
         <ScrollView>
           <BannerExample title="Native Ad">
             <View style={{height: 100, width: 100}}>
-              <NativeAd />
+              <AdRequester></AdRequester>
               {/* <NativeAdLayout
                 style={{height: 100, width: 100}}
                 adUnitId="ca-app-pub-3940256099942544/2247696110"

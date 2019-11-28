@@ -1,30 +1,25 @@
-import React, { useRef, useState, useCallback } from 'react';
-import { UIManager, findNodeHandle } from 'react-native';
-import NativeAdView from './RNNativeAdView';
+import React, { useRef, useState, useEffect } from "react";
+import { UIManager, findNodeHandle } from "react-native";
+import NativeAdView from "./RNNativeAdView";
 
-const withNativeAd = adUnitId => Component => props => {
+const withNativeAd = Component => ({ adUnitId, adManager, ...props }) => {
   const adContainerRef = useRef(null);
 
   const [adProps, setAdProps] = useState({});
-
-  const registerClick = () => {
-    console.log('Container', adContainerRef.current);
+  useEffect(() => {
     if (adContainerRef.current) {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(adContainerRef.current),
-        UIManager.getViewManagerConfig('RNAdMobNativeAdView').Commands.onClick,
-        null
-      );
+      adManager
+        .registerView(findNodeHandle(adContainerRef.current), adUnitId)
+        .then(adValue => {
+          setAdProps(adValue);
+          adManager.requestAd(adUnitId);
+        });
     }
-  };
+  }, [adManager, adUnitId]);
 
   return (
-    <NativeAdView
-      adUnitId={adUnitId}
-      onAdLoaded={({ nativeEvent }) => setAdProps(nativeEvent)}
-      ref={adContainerRef}
-    >
-      <Component {...props} {...adProps} onClick={registerClick}></Component>
+    <NativeAdView ref={adContainerRef}>
+      <Component {...props} {...adProps}></Component>
     </NativeAdView>
   );
 };

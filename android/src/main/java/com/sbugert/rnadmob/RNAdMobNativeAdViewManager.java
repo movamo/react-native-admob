@@ -56,102 +56,10 @@ public class RNAdMobNativeAdViewManager extends ViewGroupManager<UnifiedNativeAd
         view.destroy();
     }
 
-    @Override
-    public void receiveCommand(@Nonnull UnifiedNativeAdView root, int commandId, @javax.annotation.Nullable ReadableArray args) {
-        switch (commandId) {
-            case COMMAND_CLICK:
-                root.performClick();
-        }
-    }
-
     @javax.annotation.Nullable
     @Override
     public Map<String, Integer> getCommandsMap() {
         return MapBuilder.of("onClick", COMMAND_CLICK);
-    }
-
-    @ReactProp(name = PROP_AD_ID)
-    public void setAdvertisingId(final UnifiedNativeAdView view, @Nullable String advertisingId) {
-        Context context = view.getContext();
-        AdLoader loader = new AdLoader.Builder(context, advertisingId).forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
-            @Override
-            public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                onAdLoadEvent(view, unifiedNativeAd);
-            }
-        }).withAdListener(new AdListener() {
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                Log.e("ADS", Integer.toString(errorCode));
-                onAdLoadFailedEvent(view);
-            }
-        }).build();
-        loader.loadAd(new AdRequest.Builder().build());
-    }
-
-    @javax.annotation.Nullable
-    private <T extends View> T getFirstChildOfType(ViewGroup view, Class<T> type) {
-        int numOfChilds = view.getChildCount();
-        for (int i = 0; i < numOfChilds; i++) {
-            View child = view.getChildAt(i);
-            if (type.isAssignableFrom(child.getClass())) {
-                return (T) child;
-            }
-            if (child instanceof ViewGroup) {
-                View potentialChild = getFirstChildOfType((ViewGroup) child, type);
-                if (potentialChild != null) {
-                    return (T) potentialChild;
-                }
-            }
-        }
-        return null;
-    }
-
-    private void onAdLoadEvent(UnifiedNativeAdView view, UnifiedNativeAd ad) {
-        MediaView mediaView = getFirstChildOfType(view, MediaView.class);
-        if (mediaView != null) {
-            view.setMediaView(mediaView);
-        }
-
-        WritableMap adInformation = Arguments.createMap();
-        adInformation.putString("headline", ad.getHeadline());
-        adInformation.putString("callToAction", ad.getCallToAction());
-        adInformation.putString("body", ad.getBody());
-        adInformation.putString("advertiser", ad.getAdvertiser());
-        ReactContext context = (ReactContext) view.getContext();
-        context.getJSModule(RCTEventEmitter.class).receiveEvent(view.getId(), EVENT_AD_LOADED, adInformation);
-        view.setNativeAd(ad);
-        //Set Ad First or the Click-Events are getting mismatched.
-        view.setHeadlineView(ReactFindViewUtil.findView(view, "Headline"));
-        view.setBodyView(ReactFindViewUtil.findView(view, "Body"));
-        view.setCallToActionView(ReactFindViewUtil.findView(view, "CallToAction"));
-        //AdChoicesView can only be set by attaching a native Ad
-        AdChoicesView adChoicesView = getFirstChildOfType(view, AdChoicesView.class);
-        if (adChoicesView != null) {
-            //Measure is hopefully the same everytime
-            ViewGroup parent = (ViewGroup) adChoicesView.getParent();
-            adChoicesView.measure(View.MeasureSpec.makeMeasureSpec(parent.getMeasuredWidth(), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(parent.getMeasuredHeight(), View.MeasureSpec.EXACTLY));
-            // Measure Parent for the upper right corner
-
-            adChoicesView.layout(0, 0, adChoicesView.getMeasuredWidth(), adChoicesView.getMeasuredHeight());
-        }
-    }
-
-
-    private void onAdLoadFailedEvent(UnifiedNativeAdView view) {
-        ReactContext context = (ReactContext) view.getContext();
-        context.getJSModule(RCTEventEmitter.class).receiveEvent(view.getId(), EVENT_AD_LOAD_FAILED, null);
-    }
-
-    @Override
-    @Nullable
-    public Map<String, Object> getExportedCustomDirectEventTypeConstants() {
-        MapBuilder.Builder<String, Object> builder = new MapBuilder().builder();
-        String[] events = {EVENT_AD_LOADED, EVENT_AD_LOAD_FAILED};
-        for (int i = 0; i < events.length; i++) {
-            builder.put(events[i], MapBuilder.of("registrationName", events[i]));
-        }
-        return builder.build();
     }
 
     @Override
