@@ -58,15 +58,15 @@
 - (void)setNativeAd:(GADUnifiedNativeAd*)nativeAd {
   [super setNativeAd:nativeAd];
   self.headlineView = _primaryTextView;
-
+  self.callToActionView = _tertiaryTextView;
   NSString* headline = nativeAd.headline;
   NSString* tertiaryText = nativeAd.callToAction;
 
   ((UILabel*)_primaryTextView).text = headline;
   ((UILabel*)_tertiaryTextView).text = tertiaryText;
     
-  [self.mediaView setMediaContent:nativeAd.mediaContent];
-  
+  [self.mediaView setMediaContent:nativeAd.mediaContent];  
+
 }
 
 - (void)addHorizontalConstraintsToSuperviewWidth {
